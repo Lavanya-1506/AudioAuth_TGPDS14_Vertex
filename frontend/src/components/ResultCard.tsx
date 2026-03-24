@@ -36,8 +36,8 @@ const ResultCard = ({ result }: { result: Result }) => {
 
   const offset = circumference - (animatedConfidence / 100) * circumference;
 
-  const isStrong = result.confidence > 80;
-  const isWarning = result.confidence >= 50 && result.confidence <= 80;
+  const isStrong = confidenceNum > 80;
+  const isWarning = confidenceNum >= 50 && confidenceNum <= 80;
   const ringColorClass = isStrong
     ? (isHuman ? "text-success" : "text-destructive")
     : isWarning
@@ -55,6 +55,9 @@ const ResultCard = ({ result }: { result: Result }) => {
     : isWarning
       ? "text-amber-500"
       : "text-muted-foreground";
+
+  // Backend returns string, frontend expects array
+  const reasoningList = Array.isArray(result.reasoning) ? result.reasoning : [result.reasoning as string];
 
   return (
     <div className="glass-card rounded-2xl p-6 space-y-5">
@@ -90,12 +93,12 @@ const ResultCard = ({ result }: { result: Result }) => {
             />
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-sm font-bold text-foreground">{animatedConfidence}%</span>
+            <span className="text-sm font-bold text-foreground">{animatedConfidence.toFixed(1)}%</span>
           </div>
         </div>
       </div>
 
-      {result.confidence < 50 && (
+      {confidenceNum < 50 && (
         <div className="rounded-xl border border-border bg-muted/40 px-4 py-2 text-xs text-muted-foreground">
           Low confidence warning: consider re-recording in a quieter environment.
         </div>
@@ -104,15 +107,15 @@ const ResultCard = ({ result }: { result: Result }) => {
       <div>
         <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wider">Reasoning</p>
         <ul className="space-y-2">
-          {result.reasoning.map((tag) => (
-            <li key={tag} className="flex items-center gap-2 text-sm">
+          {reasoningList.map((reasoning, index) => (
+            <li key={index} className="flex items-center gap-2 text-sm">
               {isHuman ? (
                 <CheckCircle2 size={14} className={iconClass} />
               ) : (
                 <AlertTriangle size={14} className={iconClass} />
               )}
               <span className={`px-3 py-1 rounded-full text-xs font-medium ${badgeClass}`}>
-                {tag}
+                {reasoning}
               </span>
             </li>
           ))}
@@ -123,3 +126,4 @@ const ResultCard = ({ result }: { result: Result }) => {
 };
 
 export default ResultCard;
+
