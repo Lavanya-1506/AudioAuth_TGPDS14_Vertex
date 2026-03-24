@@ -1,30 +1,36 @@
 import librosa
 import numpy as np
+import joblib
+
+model = joblib.load("audio_model.pkl")
 
 def extract_features(file_path):
     try:
         audio, sr = librosa.load(file_path, sr=None)
-        
-        # Extract MFCC features
         mfcc = librosa.feature.mfcc(y=audio, sr=sr, n_mfcc=13)
-        
-        # Take mean of features
-        mfcc_mean = np.mean(mfcc.T, axis=0)
-        
-        return mfcc_mean
-    
-    except Exception as e:
-        print("Error processing audio:", e)
+        return np.mean(mfcc.T, axis=0)
+    except:
         return None
-    import random
+
 
 def predict_audio(file_path):
     features = extract_features(file_path)
     
     if features is None:
-        return "Error"
-    
-    # Temporary random prediction (we'll replace with ML later)
-    result = random.choice(["Human", "AI-generated"])
-    
-    return result
+        return "Error", 0.0, "Audio processing failed"
+
+    probs = model.predict_proba([features])[0]
+    prediction = np.argmax(probs)
+    confidence = round(max(probs) * 100, 2)
+
+    label = "AI-generated" if prediction == 1 else "Human"
+
+    # 🔥 Add reasoning logic
+    if confidence > 85:
+        reasoning = "High confidence based on consistent audio patterns"
+    elif confidence > 65:
+        reasoning = "Moderate confidence, some mixed characteristics detected"
+    else:
+        reasoning = "Low confidence, audio characteristics are unclear"
+
+    return label, confidence, reasoning

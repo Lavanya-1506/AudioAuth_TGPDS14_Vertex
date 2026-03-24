@@ -1,11 +1,7 @@
 from fastapi import FastAPI, UploadFile, File, Form
 import os
 import shutil
-<<<<<<< HEAD
 from model import predict_audio
-=======
-from prediction import extract_features, classify_audio
->>>>>>> 331cf8dc7bd094dc68a060a9886b1dff5055911b
 
 app = FastAPI()
 
@@ -25,23 +21,15 @@ def _analyze_file(file: UploadFile, language: str) -> dict:
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-<<<<<<< HEAD
     # Predict
-    result = predict_audio(file_path)
+    label, confidence, reasoning = predict_audio(file_path)
 
     return {
         "filename": file.filename,
-        "prediction": result
-    }
-=======
-    features = extract_features(file_path)
-    prediction, confidence, reasoning = classify_audio(features)
-
-    return {
-        "prediction": prediction,
-        "confidence": confidence,
+        "prediction": label,                 # ✅ fixed
+        "confidence": f"{confidence}%",      # ✅ added
         "language": language,
-        "reasoning": reasoning,
+        "reasoning": reasoning               # ✅ added
     }
 
 
@@ -59,4 +47,12 @@ async def analyze_audio_legacy(
     language: str = Form(default="English"),
 ):
     return _analyze_file(file, language)
->>>>>>> 331cf8dc7bd094dc68a060a9886b1dff5055911b
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Or put your friend's frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
