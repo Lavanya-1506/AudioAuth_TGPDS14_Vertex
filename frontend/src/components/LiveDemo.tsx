@@ -39,7 +39,8 @@ const LiveDemo = () => {
     setIsAnalyzing(true);
     setResult(null);
     setTimeout(() => {
-      setResult(mockResults[Math.random() > 0.5 ? 0 : 1]);
+      const picked = mockResults[Math.random() > 0.5 ? 0 : 1];
+      setResult({ ...picked, language: selectedLang });
       setIsAnalyzing(false);
     }, 2500);
   };
@@ -117,7 +118,7 @@ const LiveDemo = () => {
               {isAnalyzing ? (
                 <>
                   <Loader2 className="animate-spin" size={18} />
-                  Analyzing voice patterns…
+                  Analyzing acoustic patterns...
                 </>
               ) : (
                 "Analyze Audio"
@@ -147,6 +148,12 @@ const LiveDemo = () => {
               )}
             </AnimatePresence>
 
+            {isAnalyzing && (
+              <div className="glass-card rounded-2xl p-12 text-center">
+                <p className="text-muted-foreground">Analyzing acoustic patterns...</p>
+              </div>
+            )}
+
             {!result && !isAnalyzing && (
               <div className="glass-card rounded-2xl p-12 text-center">
                 <p className="text-muted-foreground">Results will appear here after analysis</p>
@@ -160,3 +167,4 @@ const LiveDemo = () => {
 };
 
 export default LiveDemo;
+
