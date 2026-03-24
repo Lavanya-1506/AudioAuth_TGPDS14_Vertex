@@ -72,8 +72,8 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ### Frontend (Terminal 2)
 ```bash
 cd frontend
-bun install
-bun dev
+npm install
+npm run dev
 ```
 
 Open http://localhost:8080
