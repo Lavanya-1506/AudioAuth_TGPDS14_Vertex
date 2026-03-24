@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { CheckCircle2, AlertTriangle } from "lucide-react";
 
-type Result = {
-  prediction: "Human Voice" | "AI Generated";
-  confidence: number;
-  language: string;
-  reasoning: string[];
+import { AnalyzeResponse } from '../../lib/api';
+
+type Result = AnalyzeResponse & {
+  confidenceNum: number;
 };
 
 const ResultCard = ({ result }: { result: Result }) => {
   const isHuman = result.prediction === "Human Voice";
+  const confidenceNum = parseFloat(result.confidence.replace('%', ''));
   const circumference = 2 * Math.PI * 40;
   const [animatedConfidence, setAnimatedConfidence] = useState(0);
 
@@ -17,7 +17,7 @@ const ResultCard = ({ result }: { result: Result }) => {
     let rafId = 0;
     const durationMs = 900;
     const start = performance.now();
-    const target = result.confidence;
+    const target = confidenceNum;
 
     const tick = (now: number) => {
       const progress = Math.min((now - start) / durationMs, 1);

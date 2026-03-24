@@ -4,22 +4,18 @@ import { Button } from "@/components/ui/button";
 import { Copy, Check, Key } from "lucide-react";
 
 const codeSnippets = {
-  curl: `curl -X POST https://api.audioauth.ai/v1/analyze \\
-  -H "Authorization: Bearer YOUR_API_KEY" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "audio_base64": "SGVsbG8gV29ybGQ...",
-    "language": "en"
-  }'`,
+  curl: `curl -X POST http://localhost:8000/analyze \\
+  -F "file=@/path/to/audio.mp3" \\
+  -F "language=Hindi"`,
   response: `{
+  "filename": "audio.mp3",
   "prediction": "AI Generated",
-  "confidence": 92.4,
+  "confidence": "92.4%",
   "language": "Hindi",
   "reasoning": [
     "Unnatural pitch variation",
     "Lack of breathing patterns"
-  ],
-  "processing_time_ms": 84
+  ]
 }`,
 };
 

@@ -60,6 +60,29 @@ There is a need for a system that can:
 
 ## ⚙️ Setup / Installation Instructions
 
-### 1. Clone the Repository
+## 🚀 Quick Start
+
+### Backend (Terminal 1)
 ```bash
+cd backend
+pip install -r requirements.txt
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+
+### Frontend (Terminal 2)
+```bash
+cd frontend
+bun install
+bun dev
+```
+
+Open http://localhost:8080
+
+## Features
+- Live audio upload & analysis
+- Multi-language support
+- Real-time AI/human voice detection
+- Vite proxy for seamless API calls
+
+### 1. Clone the Repository
 

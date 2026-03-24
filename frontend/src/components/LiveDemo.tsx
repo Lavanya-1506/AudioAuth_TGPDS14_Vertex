@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { useAnalyzeAudio, type AnalyzeResponse } from "@/lib/api";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Upload, FileAudio, Loader2 } from "lucide-react";
@@ -7,27 +8,9 @@ import ResultCard from "./ResultCard";
 
 const languages = ["English", "Hindi", "Tamil", "Telugu", "Malayalam"];
 
-type Result = {
-  prediction: "Human Voice" | "AI Generated";
-  confidence: number;
-  language: string;
-  reasoning: string[];
-};
+type Result = AnalyzeResponse;
 
-const mockResults: Result[] = [
-  {
-    prediction: "AI Generated",
-    confidence: 92.4,
-    language: "Hindi",
-    reasoning: ["Unnatural pitch variation", "Lack of breathing patterns", "Robotic cadence detected"],
-  },
-  {
-    prediction: "Human Voice",
-    confidence: 97.8,
-    language: "English",
-    reasoning: ["Natural breathing detected", "Micro-pitch variations", "Emotional tonality present"],
-  },
-];
+
 
 const LiveDemo = () => {
   const [selectedLang, setSelectedLang] = useState("English");
@@ -66,18 +49,31 @@ const LiveDemo = () => {
     setSelectedFile(file);
   };
 
+  const analyzeMutation = useAnalyzeAudio();
+
   const handleAnalyze = () => {
     if (!selectedFile) {
       setFileError("Please select an audio file first.");
       return;
     }
-    setIsAnalyzing(true);
-    setResult(null);
-    setTimeout(() => {
-      const picked = mockResults[Math.random() > 0.5 ? 0 : 1];
-      setResult({ ...picked, language: selectedLang });
-      setIsAnalyzing(false);
-    }, 2500);
+    analyzeMutation.mutate(
+      { file: selectedFile, language: selectedLang },
+      {
+        onSuccess: (data) => {
+          setResult(data);
+          setIsAnalyzing(false);
+        },
+        onError: (error: Error) => {
+          setFileError(error.message);
+          setIsAnalyzing(false);
+        },
+        onMutate: () => {
+          setIsAnalyzing(true);
+          setResult(null);
+          setFileError(null);
+        },
+      }
+    );
   };
 
   return (
@@ -169,8 +165,16 @@ const LiveDemo = () => {
               size="lg"
               className="w-full"
               onClick={handleAnalyze}
-              disabled={isAnalyzing}
-            >
+              disabled={isAnalyzing || analyzeMutation.isPending}>
+              {analyzeMutation.isPending ? (
+                <>
+                  <Loader2 className="animate-spin" size={18} />
+                  Analyzing acoustic patterns...
+                </>
+              ) : (
+                "Analyze Audio"
+              )}
+            
               {isAnalyzing ? (
                 <>
                   <Loader2 className="animate-spin" size={18} />
