@@ -84,5 +84,4 @@ Open http://localhost:8080
 - Real-time AI/human voice detection
 - Vite proxy for seamless API calls
 
-### 1. Clone the Repository
 
