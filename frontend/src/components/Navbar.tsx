@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const navLinks = [
   { label: "Features", href: "#features" },
@@ -16,12 +17,12 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-background/80 border-b border-border/50">
       <div className="container max-w-6xl mx-auto flex items-center justify-between h-16 px-4">
-        <a href="#" className="flex items-center gap-2">
+        <Link to="/" className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
             <span className="text-primary-foreground font-bold text-sm">A</span>
           </div>
           <span className="font-semibold text-lg tracking-tight text-foreground">AudioAuth</span>
-        </a>
+        </Link>
 
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
@@ -36,8 +37,12 @@ const Navbar = () => {
         </div>
 
         <div className="hidden md:flex items-center gap-3">
-          <Button variant="ghost" size="sm">Log in</Button>
-          <Button variant="default" size="sm">Get Started</Button>
+          <Button asChild variant="ghost" size="sm">
+            <Link to="/login">Log in</Link>
+          </Button>
+          <Button asChild variant="default" size="sm">
+            <Link to="/signup">Get Started</Link>
+          </Button>
         </div>
 
         <button
@@ -68,8 +73,12 @@ const Navbar = () => {
                 </a>
               ))}
               <div className="flex gap-3 pt-2">
-                <Button variant="ghost" size="sm" className="flex-1">Log in</Button>
-                <Button variant="default" size="sm" className="flex-1">Get Started</Button>
+                <Button asChild variant="ghost" size="sm" className="flex-1">
+                  <Link to="/login" onClick={() => setMobileOpen(false)}>Log in</Link>
+                </Button>
+                <Button asChild variant="default" size="sm" className="flex-1">
+                  <Link to="/signup" onClick={() => setMobileOpen(false)}>Get Started</Link>
+                </Button>
               </div>
             </div>
           </motion.div>

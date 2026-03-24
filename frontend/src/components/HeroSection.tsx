@@ -33,13 +33,17 @@ const HeroSection = () => {
           </p>
 
           <div className="flex flex-wrap gap-4">
-            <Button variant="hero" size="xl">
-              Try Demo
-              <ArrowRight className="ml-1" size={18} />
+            <Button asChild variant="hero" size="xl">
+              <a href="#demo">
+                Try Demo
+                <ArrowRight className="ml-1" size={18} />
+              </a>
             </Button>
-            <Button variant="hero-outline" size="xl">
-              <Play size={18} />
-              View API
+            <Button asChild variant="hero-outline" size="xl">
+              <a href="#api">
+                <Play size={18} />
+                View API
+              </a>
             </Button>
           </div>
 
